@@ -1,0 +1,91 @@
+<template>
+  <div class="flex-center">
+    <canvas class="flex" id="process" :width="width" :height="height"></canvas>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "dadrear",
+  data() {
+    return {};
+  },
+  props: {
+    width: {
+      type: [String, Number],
+      default: "200"
+    },
+    height: {
+      type: [String, Number],
+      default: "200"
+    },
+    prcent: {
+      type: [String, Number],
+      default: 0
+    },
+    colors: {
+      type: Array
+    }
+  },
+  methods: {
+    draw() {
+      let _that = this;
+      this.ctx.clearRect(0, 0, this.c.width, this.c.height);
+      //画白色的静态圆
+      this.ctx.save();
+      this.ctx.strokeStyle = this.colors[0];
+      this.ctx.lineWidth = 12;
+      this.ctx.beginPath();
+      this.ctx.arc(
+        this.centerX,
+        this.centerY,
+        this.centerY - 20,
+        0,
+        Math.PI * 2,
+        false
+      );
+      this.ctx.stroke();
+      this.ctx.closePath();
+      this.ctx.restore();
+      //画进度环
+      this.ctx.save();
+      this.ctx.strokeStyle = this.colors[1];
+      this.ctx.lineWidth = 18;
+      this.ctx.beginPath();
+      this.ctx.arc(
+        this.centerX,
+        this.centerY,
+        this.centerY - 20,
+        -Math.PI / 2,
+        -Math.PI / 2 + this.speed * this.rad,
+        false
+      );
+      this.ctx.stroke();
+      this.ctx.closePath();
+      this.ctx.restore();
+      //百分比文字绘制
+      this.ctx.save();
+      this.ctx.fillStyle = "#474d5d";
+      this.ctx.font = "bold 21px Arial";
+      //绘制字体并指定位置
+      this.ctx.fillText(
+        this.speed.toFixed(2) + "%",
+        this.centerX - 20,
+        this.centerY + 10
+      );
+      this.ctx.restore();
+    }
+  },
+  mounted() {
+    this.c = document.getElementById("process");
+    this.ctx = this.c.getContext("2d");
+    this.centerX = this.c.width / 2; //Canvas中心点x轴坐标
+    this.centerY = this.c.height / 2; //Canvas中心点y轴坐标
+    this.rad = (Math.PI * 2) / 100; //将360度分成100份，那么每一份就是this.rad度
+    this.speed = this.prcent;
+    console.log(this.prcent, " this.prcent this.prcent");
+
+    this.draw();
+  }
+};
+</script>
